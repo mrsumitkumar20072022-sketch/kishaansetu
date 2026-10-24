@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>किसान सेतु (KisanSetu) - खुला कृषि व्यापार और मंडी भाव</title>
+  <!-- Tailwind CSS CDN for modern responsive UI -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            kisanGreen: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+              800: '#166534',
+              900: '#14532d'
+            },
+            mandiGold: {
+              500: '#eab308',
+              600: '#ca8a04'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Google Fonts: Poppins & Hind for Hindi -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-slate-50 text-slate-900 font-['Hind',sans-serif]">
+
+  <!-- Top Navigation Bar -->
+  <header class="bg-gradient-to-r from-emerald-800 to-green-700 text-white shadow-lg sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      
+      <!-- Logo & Title -->
+      <div class="flex items-center gap-3">
+        <div class="bg-white/10 p-2 rounded-xl backdrop-blur-md border border-white/20">
+          <i data-lucide="sprout" class="w-7 h-7 text-green-300"></i>
+        </div>
+        <div>
+          <h1 class="text-xl md:text-2xl font-bold tracking-tight flex items-center gap-2">
+            <span>किसान सेतु</span>
+            <span class="text-xs bg-yellow-400 text-slate-900 font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">KisanSetu</span>
+          </h1>
+          <p class="text-xs text-green-100 hidden sm:block">सीधा थोक व्यापार • पारदर्शी लाइव बोली • सही मंडी दाम</p>
+        </div>
+      </div>
+
+      <!-- Action & Language Toggle -->
+      <div class="flex items-center gap-2 md:gap-4">
+        <!-- Backend Status Badge -->
+        <div id="backend-badge" class="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-900/60 border border-emerald-400/30 text-emerald-200">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span id="backend-status-text">सर्वर: कनेक्टेड</span>
+        </div>
+
+        <!-- Language Button -->
+        <button id="lang-toggle-btn" class="bg-white/15 hover:bg-white/25 border border-white/30 text-white text-xs md:text-sm font-semibold px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5">
+          <i data-lucide="languages" class="w-4 h-4"></i>
+          <span id="lang-label">English</span>
+        </button>
+
+        <!-- Quick Post Button -->
+        <a href="#farmer-section" class="bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-bold text-xs md:text-sm px-3 md:px-4 py-1.5 md:py-2 rounded-lg shadow-md transition-all flex items-center gap-1.5">
+          <i data-lucide="plus-circle" class="w-4 h-4"></i>
+          <span data-i18n="post_crop_btn">फसल बेचें</span>
+        </a>
+      </div>
+
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="max-w-7xl mx-auto px-4 flex space-x-1 md:space-x-3 overflow-x-auto py-1 scrollbar-none border-t border-emerald-700/50">
+      <button class="nav-tab active-tab" data-tab="tab-listings">
+        <i data-lucide="layout-grid" class="w-4 h-4"></i>
+        <span data-i18n="tab_listings">लाइव थोक मंडियां (फसलें)</span>
+      </button>
+      <button class="nav-tab" data-tab="tab-arbitrage">
+        <i data-lucide="trending-up" class="w-4 h-4"></i>
+        <span data-i18n="tab_arbitrage">मंडी भाव तुलना (मुनाफा कैलकुलेटर)</span>
+      </button>
+      <button class="nav-tab" data-tab="tab-logistics">
+        <i data-lucide="truck" class="w-4 h-4"></i>
+        <span data-i18n="tab_logistics">सामूहिक ढुलाई (Shared Logistics)</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Hero Highlight Alert Banner -->
+  <div class="bg-amber-50 border-b border-amber-200 py-2.5 px-4 text-center text-xs md:text-sm font-medium text-amber-900 flex items-center justify-center gap-2">
+    <span class="bg-amber-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">नया फीचर</span>
+    <span>💡 बिना किसी दलाली के किसान अपनी फसल का न्यूनतम समर्थन मूल्य खुद तय करें और लाइव बोली से सर्वोत्तम दाम पाएं।</span>
+  </div>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-4 py-6">
+
+    <!-- ========================================== -->
+    <!-- TAB 1: LISTINGS & FARMER POSTING           -->
+    <!-- ========================================== -->
+    <div id="tab-listings" class="tab-content active">
+
+      <!-- Top Summary Grid -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6">
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-3">
+          <div class="bg-green-100 p-2.5 rounded-lg text-green-700">
+            <i data-lucide="badge-check" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <div class="text-xs text-slate-500 font-medium" data-i18n="stat_active_crops">सक्रिय फसल लॉट</div>
+            <div class="text-xl font-bold text-slate-800" id="total-crops-count">3 लॉट</div>
+          </div>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-3">
+          <div class="bg-blue-100 p-2.5 rounded-lg text-blue-700">
+            <i data-lucide="users" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <div class="text-xs text-slate-500 font-medium" data-i18n="stat_buyers">रजिस्टर्ड थोक खरीदार</div>
+            <div class="text-xl font-bold text-slate-800">120+ HoReCa</div>
+          </div>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-3">
+          <div class="bg-amber-100 p-2.5 rounded-lg text-amber-700">
+            <i data-lucide="gavel" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <div class="text-xs text-slate-500 font-medium" data-i18n="stat_bids">आज की कुल बोलियां</div>
+            <div class="text-xl font-bold text-slate-800" id="total-bids-count">4 बोलियां</div>
+          </div>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-3">
+          <div class="bg-purple-100 p-2.5 rounded-lg text-purple-700">
+            <i data-lucide="indian-rupee" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <div class="text-xs text-slate-500 font-medium" data-i18n="stat_extra_gain">किसान का औसत अधिक लाभ</div>
+            <div class="text-xl font-bold text-green-600">+22% मुनाफा</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Area: Post New Crop (Farmer Form) -->
+      <section id="farmer-section" class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-8">
+        <div class="bg-gradient-to-r from-emerald-700 to-green-600 px-6 py-4 text-white flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-lg md:text-xl font-bold flex items-center gap-2">
+              <i data-lucide="sparkles" class="w-5 h-5 text-yellow-300"></i>
+              <span data-i18n="form_title">किसान बंधु: अपनी फसल थोक में बेचने के लिए लिस्ट करें</span>
+            </h2>
+            <p class="text-xs text-green-100" data-i18n="form_subtitle">माइक बटन दबाकर बोलें या फॉर्म भरकर 2 मिनट में खरीदारों से सीधी बोली प्राप्त करें</p>
+          </div>
+
+          <!-- Hindi Voice Assistant Button -->
+          <button id="voice-record-btn" class="self-start md:self-auto bg-white text-emerald-800 hover:bg-emerald-50 px-4 py-2 rounded-xl font-bold text-sm shadow-md transition-all flex items-center gap-2 border border-emerald-200">
+            <i data-lucide="mic" class="w-5 h-5 text-red-500 animate-pulse" id="mic-icon"></i>
+            <span id="voice-status-text">माइक बोलकर भरें (Voice Input)</span>
+          </button>
+        </div>
+
+        <!-- Voice Live Indicator -->
+        <div id="voice-banner" class="hidden bg-emerald-50 border-b border-emerald-200 px-6 py-2.5 text-xs text-emerald-800 flex items-center gap-2 font-medium">
+          <span class="inline-block w-2.5 h-2.5 rounded-full bg-red-500 animate-ping"></span>
+          <span>सुन रहा हूँ... बोलिए (उदाहरण: "40 क्विंटल आलू 1200 रुपये")</span>
+        </div>
+
+        <form id="new-crop-form" class="p-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- Crop Name -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1" data-i18n="label_crop_name">फसल का नाम (Crop Name) *</label>
+            <div class="relative">
+              <input type="text" id="crop-name-input" required placeholder="जैसे: आलू (Potato), प्याज, टमाटर" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:border-green-600 focus:ring-1 focus:ring-green-600 text-sm">
+              <i data-lucide="wheat" class="w-4 h-4 absolute right-3 top-3 text-slate-400"></i>
+            </div>
+          </div>
+
+          <!-- Variety -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1" data-i18n="label_variety">किस्म / वैरायटी (Variety)</label>
+            <input type="text" id="crop-variety-input" placeholder="जैसे: पुखराज, हाइब्रिड, लाल गरवा" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:border-green-600 focus:ring-1 focus:ring-green-600 text-sm">
+          </div>
+
+          <!-- Quantity -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1" data-i18n="label_quantity">मात्रा - क्विंटल में (Quantity in Quintals) *</label>
+            <div class="relative">
+              <input type="number" id="crop-qty-input" required min="1" step="0.5" placeholder="जैसे: 25" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:border-green-600 focus:ring-1 focus:ring-green-600 text-sm font-semibold">
+              <span class="absolute right-3 top-2.5 text-xs text-slate-400 font-bold">क्विंटल (100 Kg)</span>
+            </div>
+          </div>
+
+          <!-- Min Reserve Price -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1 text-emerald-800" data-i18n="label_min_price">न्यूनतम समर्थन मूल्य - ₹/क्विंटल (Reserve Price) *</label>
+            <div class="relative">
+              <span class="absolute left-3 top-2.5 text-xs text-slate-500 font-bold">₹</span>
+              <input type="number" id="crop-price-input" required min="100" placeholder="कम से कम क्या भाव चाहिए" class="w-full pl-7 pr-3 py-2.5 rounded-lg border border-emerald-400 bg-emerald-50/30 focus:border-green-600 focus:ring-1 focus:ring-green-600 text-sm font-bold text-emerald-900">
+            </div>
+            <p class="text-[11px] text-slate-500 mt-0.5">खरीदार इससे कम की बोली नहीं लगा सकेंगे।</p>
+          </div>
+
+          <!-- Location -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1" data-i18n="label_location">गांव / जिला / मंडी (Location) *</label>
+            <input type="text" id="crop-location-input" required placeholder="जैसे: फतेहाबाद, आगरा (UP)" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:border-green-600 focus:ring-1 focus:ring-green-600 text-sm">
+          </div>
+
+          <!-- Farmer Details -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1" data-i18n="label_farmer_contact">आपका नाम व मोबाइल नंबर (Phone) *</label>
+            <div class="grid grid-cols-2 gap-2">
+              <input type="text" id="farmer-name-input" required placeholder="नाम" value="रामेश्वर यादव" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-sm">
+              <input type="tel" id="farmer-phone-input" required placeholder="मोबाइल नंबर" value="9876543210" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-sm">
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="md:col-span-3 flex justify-end gap-3 mt-2 pt-3 border-t border-slate-100">
+            <button type="reset" class="px-5 py-2.5 rounded-lg border border-slate-300 text-slate-600 font-medium text-sm hover:bg-slate-50" data-i18n="btn_reset">रीसेट करें</button>
+            <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-2.5 rounded-lg shadow-md transition-all flex items-center gap-2 text-sm">
+              <i data-lucide="check-circle" class="w-4 h-4"></i>
+              <span data-i18n="btn_submit_crop">फसल तुरंत लिस्ट करें</span>
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Active Marketplace Grid -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4">
+        <div>
+          <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+            <i data-lucide="flame" class="w-5 h-5 text-amber-500"></i>
+            <span data-i18n="market_heading">थोक खरीद के लिए उपलब्ध फसलें (Live Lots)</span>
+          </h2>
+          <p class="text-xs text-slate-500">थोक खरीदार, कैटरर्स और सुपरमार्केट सीधे बोली लगाएं या किसान से संपर्क करें</p>
+        </div>
+
+        <!-- Filter Chips -->
+        <div class="flex items-center gap-1.5 overflow-x-auto pb-1">
+          <button class="filter-chip active" data-filter="all">सभी फसलें</button>
+          <button class="filter-chip" data-filter="आलू">🥔 आलू (Potato)</button>
+          <button class="filter-chip" data-filter="प्याज">🧅 प्याज (Onion)</button>
+          <button class="filter-chip" data-filter="टमाटर">🍅 टमाटर (Tomato)</button>
+        </div>
+      </div>
+
+      <!-- Crop Cards Container -->
+      <div id="crop-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 2: MANDI ARBITRAGE & PROFIT PREDICTOR  -->
+    <!-- ========================================== -->
+    <div id="tab-arbitrage" class="tab-content hidden">
+
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 mb-8">
+        <div class="max-w-3xl mb-6">
+          <span class="text-xs font-bold text-emerald-700 uppercase tracking-wider bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">स्मार्ट मंडी इंटेलिजेंस</span>
+          <h2 class="text-2xl font-bold text-slate-900 mt-2 flex items-center gap-2">
+            <i data-lucide="scale" class="w-6 h-6 text-emerald-600"></i>
+            <span>मंडी भाव तुलना व शुद्ध मुनाफा कैलकुलेटर (Price Arbitrage)</span>
+          </h2>
+          <p class="text-slate-600 text-sm mt-1">
+            पता लगाएं कि अपनी स्थानीय मंडी के बजाय दिल्ली (आजादपुर), मुंबई (वाशी) या बेंगलुरु में माल भेजने पर गाड़ी भाड़ा काटकर आपको कितना <b>शुद्ध अतिरिक्त मुनाफा (Net Profit)</b> होगा!
+          </p>
+        </div>
+
+        <!-- Interactive Calculator Form -->
+        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 mb-6">
+          <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-1.5">
+            <i data-lucide="calculator" class="w-4 h-4 text-emerald-600"></i>
+            <span>कैलकुलेटर: अपनी फसल का मुनाफा जांचें</span>
+          </h3>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">फसल चुनें</label>
+              <select id="arb-commodity-select" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm font-medium bg-white">
+                <option value="आलू (Potato)">🥔 आलू (Potato)</option>
+                <option value="प्याज (Onion)">🧅 प्याज (Onion)</option>
+                <option value="टमाटर (Tomato)">🍅 टमाटर (Tomato)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">मात्रा (क्विंटल में)</label>
+              <input type="number" id="arb-qty-input" value="40" min="1" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm font-bold bg-white">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">स्थानीय मंडी का भाव (₹/क्विंटल)</label>
+              <input type="number" id="arb-local-price" value="1050" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm font-bold bg-white">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">टारगेट बड़ी मंडी (भाव व भाड़ा)</label>
+              <select id="arb-target-mandi" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm font-medium bg-white">
+                <option value="1720|140|आजादपुर मंडी (दिल्ली)">आजादपुर (दिल्ली) - ₹1,720 (भाड़ा ₹140)</option>
+                <option value="1200|50|आगरा मुख्य मंडी">आगरा मुख्य मंडी - ₹1,200 (भाड़ा ₹50)</option>
+                <option value="2950|130|वाशी एपीएमसी (मुंबई)">वाशी (मुंबई) - ₹2,950 (भाड़ा ₹130)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mt-4 flex justify-end">
+            <button id="calculate-arb-btn" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-2 rounded-lg text-sm shadow transition-all flex items-center gap-2">
+              <i data-lucide="zap" class="w-4 h-4"></i>
+              <span>मुनाफा कैलकुलेट करें</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Arbitrage Output Card -->
+        <div id="arbitrage-result-card" class="bg-gradient-to-br from-emerald-500 to-green-700 rounded-xl p-6 text-white shadow-lg">
+          <!-- Filled by app.js -->
+        </div>
+
+        <!-- Real Live Mandi Rates Table -->
+        <div class="mt-8">
+          <h3 class="text-base font-bold text-slate-800 mb-3 flex items-center gap-2">
+            <i data-lucide="table" class="w-4 h-4 text-emerald-600"></i>
+            <span>प्रमुख मंडियों के ताज़ा भाव (Agmarknet Live Reference)</span>
+          </h3>
+
+          <div class="overflow-x-auto border border-slate-200 rounded-xl">
+            <table class="w-full text-left text-sm">
+              <thead class="bg-slate-100 text-slate-700 font-bold border-b border-slate-200 text-xs">
+                <tr>
+                  <th class="p-3">फसल</th>
+                  <th class="p-3">मंडी का नाम</th>
+                  <th class="p-3">राज्य व जिला</th>
+                  <th class="p-3">थोक भाव (₹/क्विंटल)</th>
+                  <th class="p-3">औसत दूरी</th>
+                  <th class="p-3">अनुमानित भाड़ा (₹/क्विंटल)</th>
+                </tr>
+              </thead>
+              <tbody id="mandi-rates-table-body" class="divide-y divide-slate-100">
+                <!-- Dynamically loaded -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 3: LOGISTICS POOLING (सामूहिक ढुलाई)    -->
+    <!-- ========================================== -->
+    <div id="tab-logistics" class="tab-content hidden">
+
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 mb-8">
+        <div class="max-w-3xl mb-6">
+          <span class="text-xs font-bold text-blue-700 uppercase tracking-wider bg-blue-50 px-2.5 py-1 rounded-full border border-blue-200">लागत घटाएं • ट्रांसपोर्ट शेयरिंग</span>
+          <h2 class="text-2xl font-bold text-slate-900 mt-2 flex items-center gap-2">
+            <i data-lucide="truck" class="w-6 h-6 text-blue-600"></i>
+            <span>सामूहिक ढुलाई (Logistics Pooling)</span>
+          </h2>
+          <p class="text-slate-600 text-sm mt-1">
+            अगर आपके पास केवल 10 या 20 क्विंटल माल है, तो पूरा ट्रक किराए पर लेने की ज़रूरत नहीं! गांव के अन्य किसानों के साथ वाहन शेयर करें और ट्रांसपोर्ट खर्च 40% तक कम करें।
+          </p>
+        </div>
+
+        <div id="logistics-cards-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Dynamically populated -->
+        </div>
+
+        <!-- Add Pool Banner -->
+        <div class="mt-8 bg-blue-50 border border-blue-200 rounded-xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <div class="bg-blue-600 text-white p-3 rounded-xl">
+              <i data-lucide="compass" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <h4 class="font-bold text-slate-900 text-sm">क्या आपके पास पिकअप या मिनी-ट्रक है?</h4>
+              <p class="text-xs text-slate-600">ट्रांसपोर्टर या किसान अपना खाली वाहन लिस्ट करके गांव के अन्य किसानों का माल ले जाएं।</p>
+            </div>
+          </div>
+          <button onclick="alert('नया वाहन रूट जोड़ने के लिए कृपया सहायता नंबर 1800-KISAN पर संपर्क करें!')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2 rounded-lg text-xs shadow">
+            नया रूट जोड़ें
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ========================================== -->
+  <!-- MODAL: PLACE BID (बोली लगाएं)              -->
+  <!-- ========================================== -->
+  <div id="bid-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl relative border border-slate-100">
+      
+      <!-- Close Button -->
+      <button id="close-bid-modal" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 p-1 rounded-lg">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="flex items-center gap-3 mb-4">
+        <div class="bg-amber-100 text-amber-700 p-2.5 rounded-xl">
+          <i data-lucide="gavel" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <h3 class="text-lg font-bold text-slate-900" id="modal-crop-title">बोली लगाएं</h3>
+          <p class="text-xs text-slate-500" id="modal-crop-subtitle">किसान: रामेश्वर यादव • 40 क्विंटल</p>
+        </div>
+      </div>
+
+      <!-- Current Prices in Modal -->
+      <div class="grid grid-cols-2 gap-3 bg-slate-50 p-3.5 rounded-xl border border-slate-200 mb-4">
+        <div>
+          <span class="text-[11px] text-slate-500 block">न्यूनतम रिजर्व मूल्य</span>
+          <span class="text-base font-bold text-slate-800" id="modal-min-price">₹1,150 /क्विंटल</span>
+        </div>
+        <div>
+          <span class="text-[11px] text-emerald-600 font-bold block">वर्तमान उच्चतम बोली</span>
+          <span class="text-base font-black text-emerald-700" id="modal-highest-bid">₹1,310 /क्विंटल</span>
+        </div>
+      </div>
+
+      <!-- Bid Form -->
+      <form id="submit-bid-form" class="space-y-3.5">
+        <input type="hidden" id="bid-listing-id">
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">आपकी बोली प्रति क्विंटल (₹/Quintal) *</label>
+          <div class="relative">
+            <span class="absolute left-3 top-2.5 text-xs text-slate-400 font-bold">₹</span>
+            <input type="number" id="bid-amount-input" required min="100" class="w-full pl-7 pr-3 py-2.5 rounded-lg border border-slate-300 font-bold text-base focus:border-amber-500 focus:ring-1 focus:ring-amber-500" placeholder="1350">
+          </div>
+          <p class="text-[11px] text-amber-700 mt-1 font-medium" id="bid-hint-text">सुझाव: उच्चतम बोली से कम से कम ₹10 अधिक की बोली लगाएं।</p>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">आपका नाम या कंपनी का नाम *</label>
+          <input type="text" id="bid-buyer-name" required placeholder="जैसे: फ्रेशमार्ट सप्लाई या राजेश गुप्ता" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">आपका मोबाइल नंबर *</label>
+          <input type="tel" id="bid-buyer-phone" required placeholder="जैसे: 9876543210" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">नोट / भुगतान शर्त (वैकल्पिक)</label>
+          <input type="text" id="bid-note" placeholder="जैसे: नगद भुगतान, 24 घंटे में उठाव" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm">
+        </div>
+
+        <div class="pt-2">
+          <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-3 rounded-xl shadow-md transition-all flex items-center justify-center gap-2">
+            <i data-lucide="check" class="w-5 h-5"></i>
+            <span>बोली सबमिट करें (Confirm Bid)</span>
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-slate-900 text-slate-400 py-10 mt-12 border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+      <div>
+        <div class="flex items-center justify-center md:justify-start gap-2 text-white font-bold text-lg mb-1">
+          <i data-lucide="sprout" class="w-5 h-5 text-green-400"></i>
+          <span>किसान सेतु (KisanSetu)</span>
+        </div>
+        <p class="text-xs text-slate-400">हैकटोबरफेस्ट (Hacktoberfest) ओपन-सोर्स प्रोजेक्ट • भारतीय किसानों के उत्थान हेतु समर्पित</p>
+      </div>
+
+      <div class="flex items-center gap-4 text-xs">
+        <span class="text-slate-400">ओपन सोर्स लाइसेंस: MIT</span>
+        <span>•</span>
+        <a href="https://github.com" target="_blank" class="hover:text-white transition flex items-center gap-1">
+          <i data-lucide="github" class="w-4 h-4"></i> GitHub Repo
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- App Script -->
+  <script src="app.js"></script>
+</body>
+</html>
